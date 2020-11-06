@@ -1,0 +1,27 @@
+// Rooms and room cards
+Room, Kitchen, K
+Room, Gaming Room, G
+Room, Bathroom, B
+Room, Theatre, T
+Room, Library, L
+Room, Computer Room, C
+Room, Dining Room, D
+Room, Study, S
+Room, Unused Room, U
+// other spaces on board
+Space, Unused, X
+Space, Walkway, W
+// Players
+Human, Comrade Korichnevyy, Brown, 165, 42, 42, 24, 9
+Computer, Mr. Rose, Pink, 255, 182, 193, 24, 14
+Computer, Colonel Naranjo, Orange, 255, 165, 0, 19, 24
+Computer, Mrs. Mauve, Purple, 75, 0, 130, 9, 24
+Computer, Ms. Bianca, White, 255, 255, 255, 0, 16
+Computer, Dr. Emeraude, Green, 0, 100, 0, 3, 0
+// Weapons
+Weapon, Broken Bottle
+Weapon, Butterfly Knife
+Weapon, Baseball Bat
+Weapon, Machete
+Weapon, Silenced Pistol
+Weapon, Bulgarian Umbrella
