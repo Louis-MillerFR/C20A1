@@ -24,6 +24,7 @@ public class Board {
 	private ArrayList<Card> deck; // keeps the unserved cards from deck
 	private Solution solution; // keeps the solution
 	private Boolean loadedCards; // keeps the loaded cards
+	private int turn;
 	
 	private Board() {
 		super();
@@ -83,6 +84,7 @@ public class Board {
 		Card room; // keeps the room card
 		Card weapon; // keeps the weapon card
 		Card person; // keeps the person card
+		(new ComputerPlayer(null, null, 0, 0)).updateReferences(deck, theInstance); // gives the full deck to the player class.
 		int itr; // iterator
 		Random rand = new Random(); // random number generation
 		do { // shuffle till find a room
@@ -115,6 +117,7 @@ public class Board {
 				deck.remove(itr);
 			}
 		}
+		turn = 0;
 	}
 	
 	public void calcTargets(BoardCell start, int distance) { // Calculates the targets
@@ -158,10 +161,11 @@ public class Board {
 			 	String data = reader.nextLine();
 			 	String[] dataArray = data.split(", ");
 			 	if (dataArray[0].equals("Room")) { // Adds lines that need to be added to the list of rooms
-			 		roomMap.put(dataArray[2].charAt(0), new Room(dataArray[1]));
 			 		deck.add(new Card(dataArray[1], CardType.ROOM));
+			 		roomMap.put(dataArray[2].charAt(0), new Room(dataArray[1],deck.get(deck.size()-1)));
+			 		
 			 	} else if  (dataArray[0].equals("Space")) {
-			 		roomMap.put(dataArray[2].charAt(0), new Room(dataArray[1]));
+			 		roomMap.put(dataArray[2].charAt(0), new Room(dataArray[1], null));
 				} else if (dataArray[0].equals("Human")) {
 			 		humans.add(new HumanPlayer(dataArray[1], new Color(Integer.parseInt(dataArray[3]), Integer.parseInt(dataArray[4]), Integer.parseInt(dataArray[5])), Integer.parseInt(dataArray[6]), Integer.parseInt(dataArray[7])));
 			 		deck.add(new Card(dataArray[1], CardType.PERSON));
@@ -211,6 +215,31 @@ public class Board {
 		}
 	}
 	
+	public Boolean checkAccusation(Solution accusation) {
+		return solution.matches(accusation);
+	}
+	
+	public Card handleSuggestion(Solution suggestion) {
+		for (int i = 1; i < 6; i++) {
+			if (currentPlayer((turn+i)%6).disproveSuggestion(suggestion) != null) {
+				return currentPlayer((turn+i)%6).disproveSuggestion(suggestion);
+			}
+		}
+		return null;
+	}
+	
+	public Player currentPlayer(int turn) {
+		if (turn < humans.size()) {
+			return humans.get(turn);
+		}
+		turn -= humans.size();
+		return computers.get(turn);
+	}
+	
+	public void nextTurn() {
+		turn = (turn+1) % 6;
+	}
+	
 	public Boolean inBounds(int row, int col) { // Checks if location is in Bounds
 		return (row >= 0 && row < numRows && col >= 0 && col < numColumns);
 	}
@@ -230,10 +259,6 @@ public class Board {
 	
 	public Set<BoardCell> getAdjList(int row, int col) {	
 		return grid[row][col].getAdjList();
-	}
-	
-	public void addRoom(char symbol, String name) { // adds a room to the list of rooms
-		roomMap.put(symbol, new Room(name));
 	}
 	
 	public int getRoomCount() { // Returns the amount of rooms
