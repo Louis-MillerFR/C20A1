@@ -19,12 +19,12 @@ public class Board {
 	private Set<BoardCell> visited; // Holds the visited targets during calcTargets calculation
 	private char roomStart; // Holds the character of a calc target's starting room
 	private String[] weapons = new String[6]; // Keeps track of all of the weapons
-	private ArrayList<HumanPlayer> humans = new ArrayList<HumanPlayer>(); // keeps track of humans
-	private ArrayList<ComputerPlayer> computers = new ArrayList<ComputerPlayer>(); // keeps track of computers
+	private static ArrayList<HumanPlayer> humans = new ArrayList<HumanPlayer>(); // keeps track of humans
+	private static ArrayList<ComputerPlayer> computers = new ArrayList<ComputerPlayer>(); // keeps track of computers
 	private ArrayList<Card> deck; // keeps the unserved cards from deck
 	private Solution solution; // keeps the solution
 	private Boolean loadedCards; // keeps the loaded cards
-	private int turn;
+	private int turn; // keeps track of which player's turn it is
 	
 	private Board() {
 		super();
@@ -78,6 +78,7 @@ public class Board {
 				}
 			}
 		}
+		
 	}
 	
 	public void deal() { // deal the cards
@@ -117,7 +118,7 @@ public class Board {
 				deck.remove(itr);
 			}
 		}
-		turn = 0;
+		turn = 0; // Initializes the turn to 0, the player's turn
 	}
 	
 	public void calcTargets(BoardCell start, int distance) { // Calculates the targets
@@ -151,6 +152,8 @@ public class Board {
 	
 	public void loadSetupConfig() throws BadConfigFormatException { // Loads the setup configuration
 		try {
+			humans = new ArrayList<HumanPlayer>();
+			computers = new ArrayList<ComputerPlayer>();
 			deck = new ArrayList<Card>();
 			loadedCards = false;
 			int weaponCount = 0;
@@ -215,28 +218,27 @@ public class Board {
 		}
 	}
 	
-	public Boolean checkAccusation(Solution accusation) {
+	public Boolean checkAccusation(Solution accusation) { // Checks if an accusation is correct
 		return solution.matches(accusation);
 	}
 	
-	public Card handleSuggestion(Solution suggestion) {
+	public Card handleSuggestion(Solution suggestion) { // Treats suggestions
 		for (int i = 1; i < 6; i++) {
-			if (currentPlayer((turn+i)%6).disproveSuggestion(suggestion) != null) {
-				return currentPlayer((turn+i)%6).disproveSuggestion(suggestion);
+			if (currentPlayer((turn+i)%6).disproveSuggestion(suggestion) != null) { // Goes through players in order to disprove the suggestion
+				return currentPlayer((turn+i)%6).disproveSuggestion(suggestion); // returns the card matched from the first player
 			}
 		}
-		return null;
+		return null; // returns null if nothing matched
 	}
 	
-	public Player currentPlayer(int turn) {
-		if (turn < humans.size()) {
+	public Player currentPlayer(int turn) { // Returns the current player for a selected turn
+		if (turn < humans.size()) { // goes through humans first, followed by computers
 			return humans.get(turn);
 		}
-		turn -= humans.size();
-		return computers.get(turn);
+		return computers.get(turn-humans.size());
 	}
 	
-	public void nextTurn() {
+	public void nextTurn() { // Moves on to the next turn
 		turn = (turn+1) % 6;
 	}
 	
@@ -257,7 +259,7 @@ public class Board {
 		return roomMap.get(room.getInitial());
 	}
 	
-	public Set<BoardCell> getAdjList(int row, int col) {	
+	public Set<BoardCell> getAdjList(int row, int col) { // Gives the adjacent cells
 		return grid[row][col].getAdjList();
 	}
 	

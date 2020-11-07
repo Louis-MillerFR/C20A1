@@ -6,7 +6,7 @@ public class Room {
 	private String name; // name of the room
 	private BoardCell centerCell; // Board cell corresponding to the room's center
 	private BoardCell labelCell; // Board cell corresponding to the room's label
-	private Card roomCard = null;
+	private Card roomCard = null; // Keeps the room's tied card
 	
 	public Room(String code, Card card) { 
 		name = code;
@@ -25,7 +25,7 @@ public class Room {
 		return centerCell;
 	}
 	
-	public Card getCard() {
+	public Card getCard() { // returns the room's card
 		return roomCard;
 	}
 	

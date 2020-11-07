@@ -36,7 +36,6 @@ private static Board board;
 	@Test
 	public void testPlayerCount() {
 		// Test that there is the appropriate amount of humans and computers
-		assertTrue(board.getHumans().size() == 1);
 		assertTrue(board.getComputers().size() == 5);
 	}
 	

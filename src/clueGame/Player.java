@@ -10,18 +10,18 @@ public abstract class Player { // Manages players
 	private Color color; // Keeps the player's color
 	protected int row; // Keeps the player's row
 	protected int column; // Keeps the player's column
-	private Set<Card> hand = new HashSet<Card>();  // Gives the player a card
-	private Set<Card> seen = new HashSet<Card>();
-	protected ArrayList<Card> unseen;
-	protected static ArrayList<Card> completeDeck;
-	protected static Board board;
+	private Set<Card> hand = new HashSet<Card>();  // Keeps the player's hand
+	private Set<Card> seen = new HashSet<Card>(); // Keeps the player's seen cards
+	protected ArrayList<Card> unseen; // Is used for tracking which cards have not been seen
+	protected static ArrayList<Card> completeDeck; // Keeps a copy of the full deck of cards
+	protected static Board board; // Keeps a reference to the board for functions
 	
 	public void updateHand(Card card) { // Gives the player a card
 		hand.add(card);
-		this.updateSeen(card);
+		updateSeen(card);
 	}
 	
-	public void updateSeen(Card seenCard) {
+	public void updateSeen(Card seenCard) { // Updates the list of seen cards
 		seen.add(seenCard);
 	}
 	
@@ -37,8 +37,7 @@ public abstract class Player { // Manages players
 		Random rand = new Random();
 		int randomizer = rand.nextInt(120);
 		boolean firstTime = true;
-		for (int i = randomizer % 3; i != (randomizer)%3 || firstTime; i = (i+1)%3) {
-			firstTime = false;
+		for (int i = randomizer % 3; i != (randomizer)%3 || firstTime; i = (i+1)%3, firstTime = false) {
 			if (i == 0 && hand.contains(suggestion.room)) {
 				return suggestion.room;
 			} else if (i == 1 && hand.contains(suggestion.weapon)) {
@@ -75,16 +74,16 @@ public abstract class Player { // Manages players
 		Player.board = board;
 	}
 	
-	public void updateDeck() {
+	public void updateDeck() { // Creates an updated version of the deck
 		unseen = completeDeck;
 		unseen.removeAll(seen);
 	}
 	
-	public Room getRoom() {
+	public Room getRoom() { // Gives the player's current room
 		return board.getRoom(getLocation());
 	}
 	
-	public BoardCell getLocation() {
+	public BoardCell getLocation() { // Gives the player's current boardcell
 		return board.getCell(row, column);
 	}
 }
